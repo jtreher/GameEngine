@@ -102,6 +102,16 @@ public class Loader {
 		 * The indices are not themselves an aspect of the vertices, and
 		 * therefore are not added to the attribute list.
 		 * 
+		 * 
+		 * also
+		 * 
+		 * There is one special slot in a VAO specifically for an index buffer.
+		 * When you bind a VBO as a GL_ELEMENT_ARRAY_BUFFER it tells OpenGL that
+		 * it's an index buffer and automatically binds it to the special index
+		 * buffer slot in the VAO. The call to glDrawElements() renders the
+		 * currently bound VAO using the indices in the index buffer associated
+		 * with that VAO. If no index buffer is bound to the currently bound VAO
+		 * when you call glDrawElements() then OpenGL throws an error.
 		 */
 	}
 	

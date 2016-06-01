@@ -6,6 +6,7 @@ import renderEngine.DisplayManager;
 import renderEngine.Loader;
 import renderEngine.RawModel;
 import renderEngine.Renderer;
+import shaders.StaticShader;
 
 public class MainGameLoop {
 
@@ -14,7 +15,7 @@ public class MainGameLoop {
 
 		Loader loader = new Loader();
 		Renderer renderer = new Renderer();
-
+		StaticShader shader = new StaticShader();
 		// first we just manually add some vertices, but you'd normally not want to do this...
 		// First, we are dealing with triangles, we pick any vertex to start with but we must 
 		// work our way clock wise
@@ -47,10 +48,14 @@ public class MainGameLoop {
 
 		while (!Display.isCloseRequested()) {
 			// game logic
+			renderer.prepare();
+			shader.start();
 			renderer.render(model);
+			shader.stop();
 			DisplayManager.updateDisplay();
 		}
-
+		shader.cleanUp();
+		loader.cleanUp();
 		DisplayManager.closeDisplay();
 	}
 }
