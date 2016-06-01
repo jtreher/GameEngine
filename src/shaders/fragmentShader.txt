@@ -1,16 +1,13 @@
 #version 400 core
 
-// the in on the fragment shader must have the same name as the out 
-// of the vertex shader
-in vec2 pass_textureCoords;
+in vec3 color;
 
 out vec4 out_Color; 
 
-uniform sampler2D textureSampler;
-
 void main(void){
-	// texture is a GLSL method that samples points on the texture
-	// to return the proper color of the texture for the pixel in question.
-	out_Color = texture( textureSampler, pass_textureCoords); 
+	// just straight up use our RGB value (which will be interpolated based on
+	// the position of the pixel relative to the vertices making
+	// up the triangle
+	out_Color = vec4(color,1.0); // alpha component = 1
 
 }
