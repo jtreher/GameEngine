@@ -1,29 +1,56 @@
 package renderEngine;
 
 import java.util.List;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
+import models.RawModel;
 
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL15;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
+import org.newdawn.slick.opengl.Texture;
+import org.newdawn.slick.opengl.TextureLoader;
 
 
 public class Loader {
 	
 	private List<Integer> vaos = new ArrayList<Integer>();
 	private List<Integer> vbos = new ArrayList<Integer>();
+	private List<Integer> textures = new ArrayList<Integer>();
 	
-	public RawModel loadToVAO( float[] positions, int[] indices){
+	public RawModel loadToVAO( float[] positions, float[] textureCoords, int[] indices){
 		// this is our unique id for the current VAO, which will remain around until destroyed
 		int vaoID = createVAO();
 		bindIndicesBuffer(indices);
-		storeDataInAttributeList(0,positions);
+		storeDataInAttributeList(0,3,positions);
+		storeDataInAttributeList(1,2, textureCoords);
 		unbindVAO();
 		return new RawModel(vaoID, indices.length );
+	}
+	
+	public int loadTexture(String fileName){
+		Texture texture = null;
+		
+		try {
+			texture = TextureLoader.getTexture("PNG", new FileInputStream("res/"+fileName+".png"));
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		int textureID = texture.getTextureID();
+		textures.add(textureID);
+		return textureID;
+		
 	}
 	
 	public void cleanUp(){
@@ -33,6 +60,10 @@ public class Loader {
 		
 		for( int vbo:vbos){
 			GL15.glDeleteBuffers(vbo);
+		}
+		
+		for( int texture:textures){
+			GL11.glDeleteTextures(texture);
 		}
 	}
 	
@@ -49,7 +80,7 @@ public class Loader {
 	// notice we first create an empty VBO, then bind it to start workign with it
 	// then convert our float array to a floatbuffer then setup the buffer data
 	// with our FloatBuffer, 
-	private void storeDataInAttributeList(int attributeNumber, float[] data){
+	private void storeDataInAttributeList(int attributeNumber, int coordinateSize, float[] data){
 		int vboID = GL15.glGenBuffers();
 		vbos.add(vboID);
 		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vboID);
@@ -75,7 +106,7 @@ public class Loader {
 		// first zero is the distance between vertices, which in our case is nothing
 		// I'm not sure why you'd want stuff in between your vertices elements at this point
 		// Finally, we are starting at zero. I'm not sure why you would have padding
-		GL20.glVertexAttribPointer(attributeNumber, 3, GL11.GL_FLOAT, false, 0, 0);
+		GL20.glVertexAttribPointer(attributeNumber, coordinateSize, GL11.GL_FLOAT, false, 0, 0);
 		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0	);
 	}
 	

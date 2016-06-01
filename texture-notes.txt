@@ -1,0 +1,12 @@
+Textures are given in UV coordinates
+
+They start at the upper left corner as 0,0, the bottom right corner is 1,1
+
+Each vertex will now need to be given a UV texture coordinate in addition to its position.
+
+That is a "mapping" and the rendering engine must figure out how to apply the texture
+
+Of course, the UV coordinates are stored in a VBO in the VAO.
+
+Texture coordinates can really map any way you want and the rendering engine will do the math and
+fill in stretching, mishaping as much as it needs to wrap the coordinates.

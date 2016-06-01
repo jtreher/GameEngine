@@ -1,0 +1,41 @@
+Shader Notes
+
+Modern OpenGL uses a programmable pipeline rather than a fixed pipeline
+
+A programmable pipeline gives you complete flexibility over the display of graphics
+rather than just a function called "add fog" you can code up some fog with a custom
+shader.
+
+We don't create everything from the ground up, but we are able to completely customize,
+combining light, texture, shade behavior into a custom shader.
+
+GLSL is the OpenGL shader language
+
+The vertex shader's output is the input to the fragment shader
+Vertex shader -> Fragment shader 
+
+The vertex shader takes data from the VAO and determines position on screen.
+Then the vertex shader has to output something per vertex for the fragment shader to consume.
+( floats, vectors, matrices )
+For instance, a vertex shader could take in a VAO and determine a color for each vertex
+outputting RGB values for the fragment shader
+
+The fragment shader iterates through the vertex shader's output to color each pixel it is responsible
+for displaying on the screen. 
+
+The fragment shader ultimately outputs what the exact color a pixel on the screen should be. Keep
+in mind that a basic shape on the screen with few vertices could span thousands of pixels.
+This means it acts on the output of the vertex shader thousands of times. This is contrast
+to the vertex shader which is merely once per vertex. 
+
+When dealing with each triangle to color, it will use a mixture of the three vertices to determine
+the color for each pixel. The weight of each vertex in a triangle depends on how close that 
+pixel is to the vertex.
+
+The magic sauce of OpenGL is to provide the fragment shader an input from the vertex shader
+that is an appropriate mix of the hard values from each vertex in direct proportion from the
+pixel's location that it is about to shade. The outputs from the vertex shader and subsequent
+inputs to the fragment shader could have nothing to do with color, but ultimately, it's the value
+relative to the position in the triangle that is what must be acted on to generate an appropriate
+rgb value to the monitor.
+
