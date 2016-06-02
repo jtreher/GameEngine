@@ -5,9 +5,11 @@ import org.lwjgl.util.vector.Vector3f;
 
 import entities.Camera;
 import entities.Entity;
+import entities.Light;
 import models.TexturedModel;
 import renderEngine.DisplayManager;
 import renderEngine.Loader;
+import renderEngine.OBJLoader;
 import models.RawModel;
 import renderEngine.Renderer;
 import shaders.StaticShader;
@@ -40,121 +42,28 @@ public class MainGameLoop {
 		// will tell openGL how to connect those dots so we can eliminate v4 and v6
 		// This ends up saving a ton whenever you start adding normals and texture coordinates to each vertex
 		// but not any savings in the most basic 2d example with 2 triangles
-		/*
-		float[] vertices = { 
-				-0.5f, 0.5f, 0f,
-				-0.5f, -0.5f, 0f,
-				0.5f, -0.5f, 0f,
-				0.5f, 0.5f, 0f
-		};
 
-		int[] indices = { 0, 1, 3, 1, 2, 3};
 		
-		float[] textureCoords = {
-				0,0,
-				0,1,
-				1,1,
-				1,0
-		};
-		*/
+		RawModel model = OBJLoader.loadObjModel("shoe", loader);
 		
-		float[] vertices = {			
-				-0.5f,0.5f,-0.5f,	
-				-0.5f,-0.5f,-0.5f,	
-				0.5f,-0.5f,-0.5f,	
-				0.5f,0.5f,-0.5f,		
-				
-				-0.5f,0.5f,0.5f,	
-				-0.5f,-0.5f,0.5f,	
-				0.5f,-0.5f,0.5f,	
-				0.5f,0.5f,0.5f,
-				
-				0.5f,0.5f,-0.5f,	
-				0.5f,-0.5f,-0.5f,	
-				0.5f,-0.5f,0.5f,	
-				0.5f,0.5f,0.5f,
-				
-				-0.5f,0.5f,-0.5f,	
-				-0.5f,-0.5f,-0.5f,	
-				-0.5f,-0.5f,0.5f,	
-				-0.5f,0.5f,0.5f,
-				
-				-0.5f,0.5f,0.5f,
-				-0.5f,0.5f,-0.5f,
-				0.5f,0.5f,-0.5f,
-				0.5f,0.5f,0.5f,
-				
-				-0.5f,-0.5f,0.5f,
-				-0.5f,-0.5f,-0.5f,
-				0.5f,-0.5f,-0.5f,
-				0.5f,-0.5f,0.5f
-				
-		};
-		
-		float[] textureCoords = {
-				
-				0,0,
-				0,1,
-				1,1,
-				1,0,			
-				0,0,
-				0,1,
-				1,1,
-				1,0,			
-				0,0,
-				0,1,
-				1,1,
-				1,0,
-				0,0,
-				0,1,
-				1,1,
-				1,0,
-				0,0,
-				0,1,
-				1,1,
-				1,0,
-				0,0,
-				0,1,
-				1,1,
-				1,0
-
-				
-		};
-		
-		int[] indices = {
-				0,1,3,	
-				3,1,2,	
-				4,5,7,
-				7,5,6,
-				8,9,11,
-				11,9,10,
-				12,13,15,
-				15,13,14,	
-				16,17,19,
-				19,17,18,
-				20,21,23,
-				23,21,22
-
-		};
-		
-		RawModel model = loader.loadToVAO( vertices, textureCoords, indices );
-		
-		ModelTexture texture = new ModelTexture(loader.loadTexture("optical"));
+		ModelTexture texture = new ModelTexture(loader.loadTexture("pinkshoe-uv"));
 		
 		TexturedModel texturedModel = new TexturedModel(model, texture);
 		
-		Entity entity = new Entity(texturedModel, new Vector3f( 0, 0, -5 ), 0, 0, 0, 1 );
+		Entity entity = new Entity(texturedModel, new Vector3f( 0,-2, -10 ), 0, 0, 0, 1 );
 		
+		Light light = new Light( new Vector3f(0,10,-10 ), new Vector3f(1,1,1));
 		Camera camera = new Camera();
 		
 		while ( ! Display.isCloseRequested() ) {
 			// game logic
 			//entity.increasePosition(0, 0.0f, -0.002f);
 			//entity.increaseRotation(0, 0, 0);
-			entity.increaseRotation(1, 1, 0);
+			entity.increaseRotation(0.1f, 0.1f, 0);
 			camera.move();
 			renderer.prepare();
 			shader.start();
+			shader.loadLight(light);
 			shader.loadViewMatrix(camera);
 			renderer.render(entity,shader);
 			shader.stop();

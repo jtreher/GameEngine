@@ -1,0 +1,16 @@
+lighting notes
+
+Depending on the position and angle of the light, certain faces will brighter than others. The more a surface is facing 
+a light, the brighter it will appear.
+
+Normals are perpendicular to the face. It tells us which direction a face is pointing. Most normals can be exported or you can
+calculate them on the fly.
+
+We'll be storing normals in attribute 2 of our VAO.
+
+Once you have the normal, you can calculate the brightness for a vertex. First you draw a vector from the vertex directly to the
+light source. Then you calculate the angle between that vector and the normal. The closer the vectors are to one another
+the more light the vertex is receiving. This means that every vector in a mesh will have two vectors
+one pointed directly at the light source and another that is the normal.
+
+Simply use the scaler product of two vectors. The Dot product says that if the two vectors overlap, then they are one, perpendicular 0, and opposite is -1. 
