@@ -3,9 +3,13 @@ package shaders;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.nio.FloatBuffer;
 
+import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
+import org.lwjgl.util.vector.Matrix4f;
+import org.lwjgl.util.vector.Vector3f;
 
 /*
  * This represents all the shader programs we will make for this engine.
@@ -15,6 +19,7 @@ public abstract class ShaderProgram {
 	private int vertexShaderID;
 	private int fragmentShaderID;
 	
+	private static FloatBuffer matrixBuffer = BufferUtils.createFloatBuffer(16);
 	/*
 	 * takes in file paths and loads them up
 	 */
@@ -24,9 +29,19 @@ public abstract class ShaderProgram {
 		programID = GL20.glCreateProgram();
 		GL20.glAttachShader(programID, vertexShaderID);
 		GL20.glAttachShader(programID, fragmentShaderID);
+		bindAttributes();
 		GL20.glLinkProgram(programID);
 		GL20.glValidateProgram(programID);
-		bindAttributes();
+		getAllUniformLocations();
+	}
+	
+	protected abstract void getAllUniformLocations();
+	
+	// go into our shader program and find the location of a uniform 
+	// what is location in this instance? The location is not known until 
+	// the program is linked and will be the address of the variable in memory.
+	protected int getUniformLocation( String uniformName){
+		return GL20.glGetUniformLocation(programID, uniformName);
 	}
 	
 	public void start(){
@@ -57,6 +72,33 @@ public abstract class ShaderProgram {
 	protected void bindAttribute(int attribute, String variableName){
 		GL20.glBindAttribLocation(programID, attribute, variableName);
 	}
+	
+	protected void loadFloat( int location, float value){
+		GL20.glUniform1f(location, value);
+	}
+	
+	protected void loadVector(int location,  Vector3f vector){
+		// 3f because it is 3floats go figure
+		GL20.glUniform3f(location, vector.x, vector.y, vector.z);
+	}
+	
+	protected void loadBoolean( int location, boolean value ){
+		float toLoad = 0;
+		if(value){
+			toLoad = 1;
+		}
+		GL20.glUniform1f(location, toLoad);
+	}
+	
+	protected void loadMatrix(int location, Matrix4f matrix){
+		// prepare the matrix for use
+		matrix.store(matrixBuffer);
+		// set it as finished
+		matrixBuffer.flip();
+		// set the matrix at the memory location of the uniform variable in the shader
+		GL20.glUniformMatrix4(location, false, matrixBuffer);
+	}
+	
 	
 	/*
 	 * Open up the shader program, read it in, compile it

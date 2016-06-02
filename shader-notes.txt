@@ -39,3 +39,20 @@ inputs to the fragment shader could have nothing to do with color, but ultimatel
 relative to the position in the triangle that is what must be acted on to generate an appropriate
 rgb value to the monitor.
 
+On uniforms:
+
+In the above, the only available input is the data in the VAO. But what about light and other environmental
+factors?
+
+Uniform variables are in the shader code and can be set from the java code. This gives us the ability
+to calculate any environmental variables at anytime and send them to the shaders.
+
+Once you have your VAO, you might want to reuse it. This is where uniforms and matrices come into play.
+
+The transformation comprises of:
+	Each model has a position in the scene, a translation is an (x,y,z) relative to the original position
+	We have a rotation around this position ( Rx, Ry, Rz ) "Euler angles"
+	We can render the objects at different scale (S) (1 is default)
+	
+You can represent transformation as a 4x4 matrix.
+	
