@@ -1,0 +1,36 @@
+Coordinates
+
+At a basic level with a 2d image, changing the z position will do nothing because the x and y positions are unchanged.
+To change Z, you actually have to back up the camera or change perspective.
+
+Projection Matrix
+
+Basically simulating camera behavior for an object. You choose the field of view, the near plane distance, and far plane distance.
+The 4x4 projection matrix is a bunch of trigonometry based on those above inputs. 
+
+The graphics library coordinate system will never change. It's always (-1,0), (0,1), (1, 0), (0,-1). The only thing you can change is the projection.
+
+For instance, when you pan to the left, you have to move the whole world to the right.
+
+A view matrix is used to maintain the "fake" camera. View space is also called camera space. The view matrix is the opposite of the camera's position and rotation to give the illusion of camera
+changing. This simplifies math because we always have a space that is front and center in the screen from the perspective of our eyeballs. Everything else
+can be anywhere in the world/scene.
+
+
+If I get this correct, a model has it's own space based on the standard coordinates. This space has to be transformed into the world space. The world space is handy to think
+about, but to get stuff displaying on the screen, we really need to worry about the view space which has all models loaded from the perspective of the viewers eyeballs (the camera). The view space
+could have every single object loaded given the widest possible angle and infinite view distance. Then you need projection space which defines what is actually visible in the view space based 
+on the angle and near/far planes giving the viewers eyeballs  a sense that there is a camera there that is panning around the screen.
+
+The main trick seems to be that when dealing with any model, all vertex positions are relative to the space in which it operates. We draw at positions relative to standard coordinates.
+
+I just have to figure out how to manage these standard coordinates when positioning stuff, as I don't quite get how you know to move just 0.002 vs 0.02 to transform along an axis.
+
+
+
+
+Here is the math if you are interested
+http://www.songho.ca/opengl/gl_projectionmatrix.html
+
+Here is a good article discussing the matrices
+http://www.codinglabs.net/article_world_view_projection_matrix.aspx
