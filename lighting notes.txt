@@ -14,3 +14,13 @@ the more light the vertex is receiving. This means that every vector in a mesh w
 one pointed directly at the light source and another that is the normal.
 
 Simply use the scaler product of two vectors. The Dot product says that if the two vectors overlap, then they are one, perpendicular 0, and opposite is -1. 
+
+The above is called "diffused lighting."
+
+Specular lighting gives objects a shiney lighting. It is used in addition to diffused lighting. It's a reflection of the light source.
+
+The amount of light depends on the reflectivity of the object. 
+
+the camera position that consumes the reflection vector so the camera position is very important to "catch the light."
+
+shine dampening determines how close a camera needs to be to get reflection off the surface of an object.
